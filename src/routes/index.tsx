@@ -4,13 +4,10 @@ import {
   ChevronRight,
   CircleCheck,
   Eye,
-  FileText,
-  Leaf,
   LockKeyhole,
   Play,
   ShieldCheck,
   Smartphone,
-  Sparkles,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,22 +17,37 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import guiaMockup from "@/assets/guia-mockup.jpg";
-import tradicaoImage from "@/assets/conhecimento-tradicional.jpg";
+import depoimentoLuanda from "@/assets/depoimentos/dep1.jpg";
+import depoimentoVinicius from "@/assets/depoimentos/dep2.jpg";
+import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
 
-const receitas = [
-  ["Gengibre + Mel", "Infusão simples com ingredientes conhecidos."],
-  ["Melancia + Limão", "Uma combinação refrescante para a rotina."],
-  ["Mucuna Pruriens", "Apresentada com preparo e recomendações de uso."],
-  ["Ginkgo Biloba", "Conheça a receita e a forma de preparo."],
-  ["Abacate + Mel", "Uma combinação simples e nutritiva."],
-  ["Gengibre + Alho", "Uma receita tradicional para incluir na rotina."],
-  ["Beterraba + Laranja", "Smoothie fácil de preparar."],
-  ["Tribulus Terrestris", "Conheça o preparo apresentado no material."],
-  ["Maca Peruana", "Infusão com orientações de preparo."],
-  ["Romã + Banana", "Uma combinação prática para o dia a dia."],
+const depoimentos = [
+  {
+    image: depoimentoLuanda,
+    alt: "Conversa de depoimento de um cliente de Luanda",
+    name: "Cliente de Luanda",
+    result: "+8 cm e energia renovada em 7 dias",
+    width: 1086,
+    height: 1920,
+  },
+  {
+    image: depoimentoVinicius,
+    alt: "Conversa de depoimento do cliente Vinícius",
+    name: "Vinícius",
+    result: "Potência máxima e controlo total",
+    width: 940,
+    height: 1920,
+  },
+  {
+    image: depoimentoGabriel,
+    alt: "Conversa de depoimento do cliente Gabriel",
+    name: "Gabriel",
+    result: "Venceu a impotência e ejaculação precoce",
+    width: 1206,
+    height: 1500,
+  },
 ];
 
 const faq = [
@@ -129,49 +141,32 @@ function LandingPage() {
         </div>
       </section>
 
-      <section className="section-rule bg-surface px-4 py-14">
-        <div className="mx-auto max-w-3xl text-center">
-          <SectionHeading title="Não é sobre uma solução milagrosa." copy="É sobre conhecer melhor aquilo que você coloca no seu corpo." />
-          <p className="mx-auto max-w-2xl text-sm leading-6 text-muted-foreground">O guia reúne receitas, combinações de ingredientes e conhecimentos tradicionais apresentados de forma simples para você conhecer e consultar dentro da sua rotina.</p>
-        </div>
-      </section>
-
-      <section className="section-rule px-4 py-14 sm:py-20">
-        <div className="mx-auto grid max-w-5xl items-center gap-8 md:grid-cols-2">
-          <div className="text-center md:order-2">
-            <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">Raízes & tradição</p>
-            <h2 className="font-display text-3xl font-bold uppercase leading-tight tracking-normal sm:text-4xl">Antes dos suplementos, existia o conhecimento.</h2>
-            <p className="mt-4 text-sm leading-6 text-muted-foreground sm:text-base">Conheça um pouco da história dos Bakongos e a forma como conhecimentos tradicionais sobre ervas, plantas e alimentos foram transmitidos ao longo do tempo.</p>
-          </div>
-          <img src={tradicaoImage} alt="Ervas, raízes, mel e caderno botânico sobre uma mesa" loading="lazy" width={1408} height={912} className="aspect-[16/10] w-full rounded-lg border border-gold/20 object-cover" />
-        </div>
-      </section>
-
       <section className="section-rule bg-surface px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <SectionHeading eyebrow="Conteúdo prático" title="10 receitas para conhecer e experimentar" />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {receitas.map(([title, copy], index) => (
-              <article key={title} className="group rounded-lg border border-border bg-card p-4 transition-colors hover:border-gold/40">
-                <div className="mb-4 flex items-center justify-between"><span className="font-display text-2xl font-bold text-gold">{String(index + 1).padStart(2, "0")}</span><Leaf className="size-4 text-primary" /></div>
-                <h3 className="font-display text-lg font-semibold uppercase leading-tight tracking-normal">{title}</h3>
-                <p className="mt-2 text-xs leading-5 text-muted-foreground">{copy}</p>
+        <div className="mx-auto max-w-5xl">
+          <SectionHeading
+            title="Depoimentos reais de clientes angolanos"
+            copy="Resultados partilhados por homens que recuperaram a sua masculinidade e confiança."
+          />
+          <div className="grid gap-5 sm:grid-cols-3">
+            {depoimentos.map((depoimento) => (
+              <article key={depoimento.name} className="overflow-hidden rounded-lg border border-gold/25 bg-card">
+                <img
+                  src={depoimento.image}
+                  alt={depoimento.alt}
+                  loading="lazy"
+                  width={depoimento.width}
+                  height={depoimento.height}
+                  className="aspect-[3/4] w-full object-cover object-top"
+                />
+                <div className="border-t border-border p-4 text-center">
+                  <p className="font-display text-lg font-bold uppercase tracking-normal">{depoimento.name}</p>
+                  <p className="mt-1 text-xs font-semibold text-gold">✓ Verificado</p>
+                  <p className="mt-2 text-sm leading-5 text-muted-foreground">{depoimento.result}</p>
+                </div>
               </article>
             ))}
           </div>
           <div className="mt-8 text-center"><Cta /></div>
-        </div>
-      </section>
-
-      <section className="section-rule px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeading title="Veja por dentro do guia" copy="Conheça o material que você receberá após a confirmação do pagamento." />
-          <div className="overflow-hidden rounded-lg border border-gold/25 bg-card">
-            <img src={guiaMockup} alt="Capa do guia e páginas digitais com exemplos de receitas" loading="lazy" width={1408} height={1008} className="aspect-[7/5] w-full object-cover" />
-            <div className="grid grid-cols-3 border-t border-border">
-              {[{icon: BookOpen,label:"Capa premium"},{icon: FileText,label:"Índice claro"},{icon: Sparkles,label:"Receitas ilustradas"}].map(({icon: Icon,label}) => <div key={label} className="flex min-w-0 flex-col items-center gap-2 border-r border-border px-2 py-4 text-center last:border-r-0"><Icon className="size-4 text-gold"/><span className="text-[10px] font-bold uppercase text-muted-foreground sm:text-xs">{label}</span></div>)}
-            </div>
-          </div>
         </div>
       </section>
 
