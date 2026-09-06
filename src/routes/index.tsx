@@ -4,12 +4,10 @@ import {
   ChevronRight,
   CircleCheck,
   Eye,
-  FileText,
   LockKeyhole,
   Play,
   ShieldCheck,
   Smartphone,
-  Sparkles,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
