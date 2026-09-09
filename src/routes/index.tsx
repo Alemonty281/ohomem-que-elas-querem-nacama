@@ -70,11 +70,12 @@ function useVslUnlock() {
   }, [unlocked]);
 
   const handlePlay = useCallback(() => {
+    setVslStarted(true);
     const video = videoRef.current;
     if (video) void video.play();
   }, []);
 
-  return { unlocked, videoRef, handlePlay };
+  return { unlocked, vslStarted, videoRef, handlePlay };
 }
 
 const depoimentos = [
