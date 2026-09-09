@@ -175,13 +175,18 @@ function LandingPage() {
 
           <div className="mx-auto mt-7 max-w-3xl">
             <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/30 bg-surface shadow-2xl shadow-primary/15">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
-              <div className="absolute inset-0 grid place-items-center px-5">
-                <button aria-label="Reproduzir apresentação em vídeo" className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24">
-                  <Play className="ml-1 size-8 fill-current sm:size-10" />
-                </button>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-primary/30"><div className="h-full w-[12%] bg-primary" /></div>
+              <video ref={videoRef} className="absolute inset-0 h-full w-full" controls playsInline preload="metadata" src={VSL_VIDEO_URL || undefined} />
+              {!vslStarted && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
+                  <div className="absolute inset-0 grid place-items-center px-5">
+                    <button onClick={handlePlay} aria-label="Reproduzir apresentação em vídeo" className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24">
+                      <Play className="ml-1 size-8 fill-current sm:size-10" />
+                    </button>
+                  </div>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary/30"><div className="h-full w-[12%] bg-primary" /></div>
+                </>
+              )}
             </div>
           </div>
 
