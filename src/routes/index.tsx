@@ -25,7 +25,7 @@ import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
 
-// O vídeo deve ser guardado na pasta public com o nome vsl.mp4
+// Caminho do vídeo na pasta public
 const VSL_VIDEO_URL = "/vsl.mp4";
 const UNLOCK_AFTER_SECONDS = 300;
 const UNLOCK_STORAGE_KEY = "vsl_unlocked";
@@ -48,7 +48,6 @@ function useVslUnlock() {
     const onTimeUpdate = () => {
       const current = video.currentTime;
       const last = lastTimeRef.current;
-      // Acumula apenas avanços reais de reprodução
       if (last !== null && current > last && current - last < 1.5) {
         playedRef.current += current - last;
       }
@@ -74,6 +73,7 @@ function useVslUnlock() {
     setVslStarted(true);
     const video = videoRef.current;
     if (video) {
+      video.currentTime = 0;
       video.play().catch((err) => console.error("Erro ao reproduzir o vídeo:", err));
     }
   }, []);
@@ -185,26 +185,29 @@ function LandingPage() {
               <video
                 ref={videoRef}
                 className="h-full w-full object-cover"
-                controls
+                controls={vslStarted}
                 playsInline
-                preload="auto"
+                preload="metadata"
                 controlsList="nodownload"
-                src={VSL_VIDEO_URL}
-              />
+              >
+                <source src={VSL_VIDEO_URL} type="video/mp4" />
+                O seu navegador não suporta a reprodução deste vídeo.
+              </video>
+
               {!vslStarted && (
-                <>
-                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
-                  <div className="absolute inset-0 grid place-items-center px-5 z-10">
-                    <button
-                      onClick={handlePlay}
-                      aria-label="Reproduzir apresentação em vídeo"
-                      className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24"
-                    >
-                      <Play className="ml-1 size-8 fill-current sm:size-10" />
-                    </button>
-                  </div>
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary/30"><div className="h-full w-[12%] bg-primary" /></div>
-                </>
+                <div 
+                  onClick={handlePlay}
+                  className="absolute inset-0 cursor-pointer z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-[2px] transition-all hover:bg-black/50"
+                >
+                  <button
+                    type="button"
+                    aria-label="Reproduzir apresentação em vídeo"
+                    className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform group-hover:scale-105 sm:size-24 pointer-events-none"
+                  >
+                    <Play className="ml-1 size-8 fill-current sm:size-10" />
+                  </button>
+                  <p className="mt-4 text-xs font-bold uppercase tracking-widest text-gold">Clique para iniciar o vídeo</p>
+                </div>
               )}
             </div>
           </div>
