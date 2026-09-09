@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -22,6 +23,60 @@ import depoimentoVinicius from "@/assets/depoimentos/dep2.jpg";
 import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
+
+const VSL_VIDEO_URL = "";
+const UNLOCK_AFTER_SECONDS = 300;
+const UNLOCK_STORAGE_KEY = "vsl_unlocked";
+
+function useVslUnlock() {
+  const [unlocked, setUnlocked] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.sessionStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
+  });
+  const [vslStarted, setVslStarted] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const playedRef = useRef(0);
+  const lastTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (unlocked) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const onTimeUpdate = () => {
+      const current = video.currentTime;
+      const last = lastTimeRef.current;
+      // Only accumulate real forward playback deltas; ignore seeks.
+      if (last !== null && current > last && current - last < 1.5) {
+        playedRef.current += current - last;
+      }
+      lastTimeRef.current = current;
+      if (playedRef.current >= UNLOCK_AFTER_SECONDS) {
+        window.sessionStorage.setItem(UNLOCK_STORAGE_KEY, "1");
+        setUnlocked(true);
+      }
+    };
+    const onSeeked = () => {
+      // Reset the baseline so skipped time never counts.
+      lastTimeRef.current = video.currentTime;
+    };
+
+    video.addEventListener("timeupdate", onTimeUpdate);
+    video.addEventListener("seeked", onSeeked);
+    return () => {
+      video.removeEventListener("timeupdate", onTimeUpdate);
+      video.removeEventListener("seeked", onSeeked);
+    };
+  }, [unlocked]);
+
+  const handlePlay = useCallback(() => {
+    setVslStarted(true);
+    const video = videoRef.current;
+    if (video) void video.play();
+  }, []);
+
+  return { unlocked, vslStarted, videoRef, handlePlay };
+}
 
 const depoimentos = [
   {
@@ -105,6 +160,7 @@ function SectionHeading({ eyebrow, title, copy }: { eyebrow?: string; title: str
 }
 
 function LandingPage() {
+  const { unlocked, vslStarted, videoRef, handlePlay } = useVslUnlock();
   return (
     <main className="min-h-screen bg-background text-foreground">
       <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:pt-10">
@@ -122,25 +178,34 @@ function LandingPage() {
 
           <div className="mx-auto mt-7 max-w-3xl">
             <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/30 bg-surface shadow-2xl shadow-primary/15">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
-              <div className="absolute inset-0 grid place-items-center px-5">
-                <button aria-label="Reproduzir apresentação em vídeo" className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24">
-                  <Play className="ml-1 size-8 fill-current sm:size-10" />
-                </button>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-primary/30"><div className="h-full w-[12%] bg-primary" /></div>
+              <video ref={videoRef} className="absolute inset-0 h-full w-full" controls playsInline preload="metadata" src={VSL_VIDEO_URL || undefined} />
+              {!vslStarted && (
+                <>
+                  <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
+                  <div className="absolute inset-0 grid place-items-center px-5">
+                    <button onClick={handlePlay} aria-label="Reproduzir apresentação em vídeo" className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24">
+                      <Play className="ml-1 size-8 fill-current sm:size-10" />
+                    </button>
+                  </div>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary/30"><div className="h-full w-[12%] bg-primary" /></div>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="mx-auto mt-6 max-w-xl text-center">
-            <p className="flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-gold"><Eye className="size-4" /> Assista até ao final</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Descubra o que existe por trás das 10 receitas e conheça o conteúdo completo do guia.</p>
-            <div className="mt-5"><Cta /></div>
-            <TrustLine />
-          </div>
+          {unlocked && (
+            <div className="mx-auto mt-6 max-w-xl text-center">
+              <p className="flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-gold"><Eye className="size-4" /> Assista até ao final</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">Descubra o que existe por trás das 10 receitas e conheça o conteúdo completo do guia.</p>
+              <div className="mt-5"><Cta /></div>
+              <TrustLine />
+            </div>
+          )}
         </div>
       </section>
 
+      {unlocked && (
+        <>
       <section className="section-rule bg-surface px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <SectionHeading
@@ -226,6 +291,8 @@ function LandingPage() {
         <p>Material educativo. Não substitui avaliação, diagnóstico ou tratamento profissional.</p>
         <p className="mt-1">© 2026 O Homem Que Elas Querem na Cama</p>
       </footer>
+        </>
+      )}
     </main>
   );
 }
