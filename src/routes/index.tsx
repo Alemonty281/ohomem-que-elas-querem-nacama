@@ -24,6 +24,7 @@ import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
 
+const VSL_VIDEO_URL = "";
 const UNLOCK_AFTER_SECONDS = 300;
 const UNLOCK_STORAGE_KEY = "vsl_unlocked";
 
