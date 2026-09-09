@@ -25,7 +25,8 @@ import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
 
-const VSL_VIDEO_URL = "";
+// O vídeo deve ser guardado na pasta public com o nome vsl.mp4
+const VSL_VIDEO_URL = "/vsl.mp4";
 const UNLOCK_AFTER_SECONDS = 300;
 const UNLOCK_STORAGE_KEY = "vsl_unlocked";
 
@@ -47,7 +48,7 @@ function useVslUnlock() {
     const onTimeUpdate = () => {
       const current = video.currentTime;
       const last = lastTimeRef.current;
-      // Only accumulate real forward playback deltas; ignore seeks.
+      // Acumula apenas avanços reais de reprodução
       if (last !== null && current > last && current - last < 1.5) {
         playedRef.current += current - last;
       }
@@ -58,7 +59,6 @@ function useVslUnlock() {
       }
     };
     const onSeeked = () => {
-      // Reset the baseline so skipped time never counts.
       lastTimeRef.current = video.currentTime;
     };
 
@@ -73,7 +73,9 @@ function useVslUnlock() {
   const handlePlay = useCallback(() => {
     setVslStarted(true);
     const video = videoRef.current;
-    if (video) void video.play();
+    if (video) {
+      video.play().catch((err) => console.error("Erro ao reproduzir o vídeo:", err));
+    }
   }, []);
 
   return { unlocked, vslStarted, videoRef, handlePlay };
@@ -180,12 +182,24 @@ function LandingPage() {
 
           <div className="mx-auto mt-7 max-w-3xl">
             <div className="relative aspect-video overflow-hidden rounded-lg border border-gold/30 bg-surface shadow-2xl shadow-primary/15">
-              <video ref={videoRef} className="absolute inset-0 h-full w-full" controls playsInline preload="metadata" src={VSL_VIDEO_URL || undefined} />
+              <video
+                ref={videoRef}
+                className="h-full w-full object-cover"
+                controls
+                playsInline
+                preload="auto"
+                controlsList="nodownload"
+                src={VSL_VIDEO_URL}
+              />
               {!vslStarted && (
                 <>
                   <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,var(--wine),var(--background)_72%)]" />
-                  <div className="absolute inset-0 grid place-items-center px-5">
-                    <button onClick={handlePlay} aria-label="Reproduzir apresentação em vídeo" className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24">
+                  <div className="absolute inset-0 grid place-items-center px-5 z-10">
+                    <button
+                      onClick={handlePlay}
+                      aria-label="Reproduzir apresentação em vídeo"
+                      className="group grid size-20 place-items-center rounded-full border border-gold/50 bg-primary text-primary-foreground shadow-conversion transition-transform hover:scale-105 sm:size-24"
+                    >
                       <Play className="ml-1 size-8 fill-current sm:size-10" />
                     </button>
                   </div>
@@ -208,91 +222,91 @@ function LandingPage() {
 
       {unlocked && (
         <>
-      <section className="section-rule bg-surface px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <SectionHeading
-            title="Depoimentos reais de clientes angolanos"
-            copy="Resultados partilhados por homens que recuperaram a sua masculinidade e confiança."
-          />
-          <div className="grid gap-5 sm:grid-cols-3">
-            {depoimentos.map((depoimento) => (
-              <article key={depoimento.name} className="overflow-hidden rounded-lg border border-gold/25 bg-card">
-                <img
-                  src={depoimento.image}
-                  alt={depoimento.alt}
-                  loading="lazy"
-                  width={depoimento.width}
-                  height={depoimento.height}
-                  className="aspect-[3/4] w-full object-cover object-top"
-                />
-                <div className="border-t border-border p-4 text-center">
-                  <p className="font-display text-lg font-bold uppercase tracking-normal">{depoimento.name}</p>
-                  <p className="mt-1 text-xs font-semibold text-gold">✓ Verificado</p>
-                  <p className="mt-2 text-sm leading-5 text-muted-foreground">{depoimento.result}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-          <div className="mt-8 text-center"><Cta /></div>
-        </div>
-      </section>
+          <section className="section-rule bg-surface px-4 py-14 sm:py-20">
+            <div className="mx-auto max-w-5xl">
+              <SectionHeading
+                title="Depoimentos reais de clientes angolanos"
+                copy="Resultados partilhados por homens que recuperaram a sua masculinidade e confiança."
+              />
+              <div className="grid gap-5 sm:grid-cols-3">
+                {depoimentos.map((depoimento) => (
+                  <article key={depoimento.name} className="overflow-hidden rounded-lg border border-gold/25 bg-card">
+                    <img
+                      src={depoimento.image}
+                      alt={depoimento.alt}
+                      loading="lazy"
+                      width={depoimento.width}
+                      height={depoimento.height}
+                      className="aspect-[3/4] w-full object-cover object-top"
+                    />
+                    <div className="border-t border-border p-4 text-center">
+                      <p className="font-display text-lg font-bold uppercase tracking-normal">{depoimento.name}</p>
+                      <p className="mt-1 text-xs font-semibold text-gold">✓ Verificado</p>
+                      <p className="mt-2 text-sm leading-5 text-muted-foreground">{depoimento.result}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+              <div className="mt-8 text-center"><Cta /></div>
+            </div>
+          </section>
 
-      <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
-          <div className="text-center">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">Oferta especial</p>
-            <h2 className="mt-3 font-display text-3xl font-bold uppercase tracking-normal sm:text-4xl">Acesso ao guia completo</h2>
-            <p className="mt-2 text-sm font-semibold uppercase text-muted-foreground">O Homem Que Elas Querem na Cama</p>
-          </div>
-          <ul className="mx-auto mt-7 max-w-sm space-y-3">
-            {["10 receitas naturais","Ingredientes e preparos","Conhecimento tradicional","Contexto sobre bem-estar masculino","Material digital de acesso imediato"].map(item => <li key={item} className="flex items-start gap-3 text-sm"><CircleCheck className="mt-0.5 size-4 shrink-0 text-gold"/><span>{item}</span></li>)}
-          </ul>
-          <div className="my-7 border-y border-border py-6 text-center">
-            <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Pagamento único</p>
-            <p className="font-display text-6xl font-bold tracking-normal text-foreground">3.000 <span className="text-2xl text-gold">Kz</span></p>
-            <p className="mt-1 text-xs text-muted-foreground">Acesso digital</p>
-          </div>
-          <div className="text-center"><Cta /><TrustLine /></div>
-        </div>
-      </section>
+          <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
+            <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
+              <div className="text-center">
+                <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">Oferta especial</p>
+                <h2 className="mt-3 font-display text-3xl font-bold uppercase tracking-normal sm:text-4xl">Acesso ao guia completo</h2>
+                <p className="mt-2 text-sm font-semibold uppercase text-muted-foreground">O Homem Que Elas Querem na Cama</p>
+              </div>
+              <ul className="mx-auto mt-7 max-w-sm space-y-3">
+                {["10 receitas naturais","Ingredientes e preparos","Conhecimento tradicional","Contexto sobre bem-estar masculino","Material digital de acesso imediato"].map(item => <li key={item} className="flex items-start gap-3 text-sm"><CircleCheck className="mt-0.5 size-4 shrink-0 text-gold"/><span>{item}</span></li>)}
+              </ul>
+              <div className="my-7 border-y border-border py-6 text-center">
+                <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Pagamento único</p>
+                <p className="font-display text-6xl font-bold tracking-normal text-foreground">3.000 <span className="text-2xl text-gold">Kz</span></p>
+                <p className="mt-1 text-xs text-muted-foreground">Acesso digital</p>
+              </div>
+              <div className="text-center"><Cta /><TrustLine /></div>
+            </div>
+          </section>
 
-      <section className="section-rule px-4 py-14">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-          <div className="grid size-20 shrink-0 place-items-center rounded-full border border-gold/40 bg-gold/10"><ShieldCheck className="size-10 text-gold" /></div>
-          <div className="min-w-0 flex-1 text-center">
-            <h2 className="font-display text-3xl font-bold uppercase tracking-normal">Você tem 7 dias de garantia</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Você pode conhecer o material conforme as condições da oferta e contar com 7 dias de garantia.</p>
-          </div>
-        </div>
-      </section>
+          <section className="section-rule px-4 py-14">
+            <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
+              <div className="grid size-20 shrink-0 place-items-center rounded-full border border-gold/40 bg-gold/10"><ShieldCheck className="size-10 text-gold" /></div>
+              <div className="min-w-0 flex-1 text-center">
+                <h2 className="font-display text-3xl font-bold uppercase tracking-normal">Você tem 7 dias de garantia</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">Você pode conhecer o material conforme as condições da oferta e contar com 7 dias de garantia.</p>
+              </div>
+            </div>
+          </section>
 
-      <section className="section-rule bg-surface px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-3xl">
-          <SectionHeading title="Perguntas frequentes" />
-          <Accordion type="single" collapsible className="space-y-2">
-            {faq.map(([question, answer], index) => (
-              <AccordionItem key={question} value={`item-${index}`} className="rounded-lg border border-border bg-card px-4">
-                <AccordionTrigger className="min-h-14 text-left text-sm font-bold hover:no-underline">{question}</AccordionTrigger>
-                <AccordionContent className="text-sm leading-6 text-muted-foreground">{answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+          <section className="section-rule bg-surface px-4 py-14 sm:py-20">
+            <div className="mx-auto max-w-3xl">
+              <SectionHeading title="Perguntas frequentes" />
+              <Accordion type="single" collapsible className="space-y-2">
+                {faq.map(([question, answer], index) => (
+                  <AccordionItem key={question} value={`item-${index}`} className="rounded-lg border border-border bg-card px-4">
+                    <AccordionTrigger className="min-h-14 text-left text-sm font-bold hover:no-underline">{question}</AccordionTrigger>
+                    <AccordionContent className="text-sm leading-6 text-muted-foreground">{answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </section>
 
-      <section className="section-rule relative overflow-hidden px-4 py-16 sm:py-24">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,color-mix(in_oklab,var(--wine)_80%,transparent),transparent_70%)]" />
-        <div className="relative mx-auto max-w-3xl text-center">
-          <SectionHeading title="Conheça o guia agora" copy="Tenha acesso ao material completo por apenas 3.000 Kz." />
-          <Cta>QUERO ACESSAR AGORA</Cta>
-          <TrustLine compact />
-        </div>
-      </section>
+          <section className="section-rule relative overflow-hidden px-4 py-16 sm:py-24">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,color-mix(in_oklab,var(--wine)_80%,transparent),transparent_70%)]" />
+            <div className="relative mx-auto max-w-3xl text-center">
+              <SectionHeading title="Conheça o guia agora" copy="Tenha acesso ao material completo por apenas 3.000 Kz." />
+              <Cta>QUERO ACESSAR AGORA</Cta>
+              <TrustLine compact />
+            </div>
+          </section>
 
-      <footer className="border-t border-border px-4 py-7 text-center text-[11px] leading-5 text-muted-foreground">
-        <p>Material educativo. Não substitui avaliação, diagnóstico ou tratamento profissional.</p>
-        <p className="mt-1">© 2026 O Homem Que Elas Querem na Cama</p>
-      </footer>
+          <footer className="border-t border-border px-4 py-7 text-center text-[11px] leading-5 text-muted-foreground">
+            <p>Material educativo. Não substitui avaliação, diagnóstico ou tratamento profissional.</p>
+            <p className="mt-1">© 2026 O Homem Que Elas Querem na Cama</p>
+          </footer>
         </>
       )}
     </main>
