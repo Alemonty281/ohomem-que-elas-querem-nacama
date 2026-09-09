@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   ChevronRight,
@@ -22,6 +23,57 @@ import depoimentoVinicius from "@/assets/depoimentos/dep2.jpg";
 import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
 const CHECKOUT_URL = "#oferta";
+
+const UNLOCK_AFTER_SECONDS = 300;
+const UNLOCK_STORAGE_KEY = "vsl_unlocked";
+
+function useVslUnlock() {
+  const [unlocked, setUnlocked] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.sessionStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
+  });
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const playedRef = useRef(0);
+  const lastTimeRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (unlocked) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const onTimeUpdate = () => {
+      const current = video.currentTime;
+      const last = lastTimeRef.current;
+      // Only accumulate real forward playback deltas; ignore seeks.
+      if (last !== null && current > last && current - last < 1.5) {
+        playedRef.current += current - last;
+      }
+      lastTimeRef.current = current;
+      if (playedRef.current >= UNLOCK_AFTER_SECONDS) {
+        window.sessionStorage.setItem(UNLOCK_STORAGE_KEY, "1");
+        setUnlocked(true);
+      }
+    };
+    const onSeeked = () => {
+      // Reset the baseline so skipped time never counts.
+      lastTimeRef.current = video.currentTime;
+    };
+
+    video.addEventListener("timeupdate", onTimeUpdate);
+    video.addEventListener("seeked", onSeeked);
+    return () => {
+      video.removeEventListener("timeupdate", onTimeUpdate);
+      video.removeEventListener("seeked", onSeeked);
+    };
+  }, [unlocked]);
+
+  const handlePlay = useCallback(() => {
+    const video = videoRef.current;
+    if (video) void video.play();
+  }, []);
+
+  return { unlocked, videoRef, handlePlay };
+}
 
 const depoimentos = [
   {
