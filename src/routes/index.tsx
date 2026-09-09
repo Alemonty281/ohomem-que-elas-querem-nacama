@@ -266,7 +266,7 @@ function LandingPage() {
               </ul>
               <div className="my-7 border-y border-border py-6 text-center">
                 <p className="text-xs uppercase tracking-[0.12em] text-muted-foreground">Pagamento único</p>
-                <p className="font-display text-6xl font-bold tracking-normal text-foreground">3.000 <span className="text-2xl text-gold">Kz</span></p>
+                <p className="font-display text-6xl font-bold tracking-normal text-foreground">4 900,00 <span className="text-2xl text-gold">Kz</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">Acesso digital</p>
               </div>
               <div className="text-center"><Cta /><TrustLine /></div>
@@ -300,7 +300,7 @@ function LandingPage() {
           <section className="section-rule relative overflow-hidden px-4 py-16 sm:py-24">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,color-mix(in_oklab,var(--wine)_80%,transparent),transparent_70%)]" />
             <div className="relative mx-auto max-w-3xl text-center">
-              <SectionHeading title="Conheça o guia agora" copy="Tenha acesso ao material completo por apenas 3.000 Kz." />
+              <SectionHeading title="Conheça o guia agora" copy="Tenha acesso ao material completo por apenas 4 900,00 Kz." />
               <Cta>QUERO ACESSAR AGORA</Cta>
               <TrustLine compact />
             </div>
