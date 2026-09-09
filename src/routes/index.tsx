@@ -193,15 +193,19 @@ function LandingPage() {
             </div>
           </div>
 
-          <div className="mx-auto mt-6 max-w-xl text-center">
-            <p className="flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-gold"><Eye className="size-4" /> Assista até ao final</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">Descubra o que existe por trás das 10 receitas e conheça o conteúdo completo do guia.</p>
-            <div className="mt-5"><Cta /></div>
-            <TrustLine />
-          </div>
+          {unlocked && (
+            <div className="mx-auto mt-6 max-w-xl text-center">
+              <p className="flex items-center justify-center gap-2 text-xs font-extrabold uppercase tracking-[0.12em] text-gold"><Eye className="size-4" /> Assista até ao final</p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">Descubra o que existe por trás das 10 receitas e conheça o conteúdo completo do guia.</p>
+              <div className="mt-5"><Cta /></div>
+              <TrustLine />
+            </div>
+          )}
         </div>
       </section>
 
+      {unlocked && (
+        <>
       <section className="section-rule bg-surface px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <SectionHeading
