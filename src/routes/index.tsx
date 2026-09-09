@@ -33,6 +33,7 @@ function useVslUnlock() {
     if (typeof window === "undefined") return false;
     return window.sessionStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
   });
+  const [vslStarted, setVslStarted] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const playedRef = useRef(0);
   const lastTimeRef = useRef<number | null>(null);
