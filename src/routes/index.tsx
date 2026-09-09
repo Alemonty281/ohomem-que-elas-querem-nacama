@@ -33,47 +33,35 @@ const UNLOCK_STORAGE_KEY = "vsl_unlocked";
 function useVslUnlock() {
   const [unlocked, setUnlocked] = useState(() => {
     if (typeof window === "undefined") return false;
-    return window.sessionStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
+    // Utiliza localStorage para persistir o desbloqueio entre sessões e recarregamentos
+    return window.localStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
   });
   const [vslStarted, setVslStarted] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const playedRef = useRef(0);
-  const lastTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (unlocked) return;
-    const video = videoRef.current;
-    if (!video) return;
 
-    const onTimeUpdate = () => {
-      const current = video.currentTime;
-      const last = lastTimeRef.current;
-      if (last !== null && current > last && current - last < 1.5) {
-        playedRef.current += current - last;
-      }
-      lastTimeRef.current = current;
-      if (playedRef.current >= UNLOCK_AFTER_SECONDS) {
-        window.sessionStorage.setItem(UNLOCK_STORAGE_KEY, "1");
-        setUnlocked(true);
-      }
-    };
-    const onSeeked = () => {
-      lastTimeRef.current = video.currentTime;
-    };
+    // Temporizador infalível em tempo real acionado ao dar play no vídeo
+    if (vslStarted) {
+      const startTime = Date.now();
+      const interval = setInterval(() => {
+        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+        if (elapsedSeconds >= UNLOCK_AFTER_SECONDS) {
+          window.localStorage.setItem(UNLOCK_STORAGE_KEY, "1");
+          setUnlocked(true);
+          clearInterval(interval);
+        }
+      }, 1000);
 
-    video.addEventListener("timeupdate", onTimeUpdate);
-    video.addEventListener("seeked", onSeeked);
-    return () => {
-      video.removeEventListener("timeupdate", onTimeUpdate);
-      video.removeEventListener("seeked", onSeeked);
-    };
-  }, [unlocked]);
+      return () => clearInterval(interval);
+    }
+  }, [vslStarted, unlocked]);
 
   const handlePlay = useCallback(() => {
     setVslStarted(true);
     const video = videoRef.current;
     if (video) {
-      video.currentTime = 0;
       video.play().catch((err) => console.error("Erro ao reproduzir o vídeo:", err));
     }
   }, []);
