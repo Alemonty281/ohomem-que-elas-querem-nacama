@@ -26,7 +26,7 @@ import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 const CHECKOUT_URL = "#oferta";
 
 // Caminho do vídeo na pasta public
-const VSL_VIDEO_URL = "https://res.cloudinary.com/nc1tjme8/video/upload/f_auto,q_auto/v1788955929/vsl.mp4.mp4";
+const VSL_VIDEO_URL = "https://github.com/Alemonty281/ohomem-que-elas-querem-nacama/releases/download/v1.0.0/vsl.mp4.mp4";
 const UNLOCK_AFTER_SECONDS = 300;
 const UNLOCK_STORAGE_KEY = "vsl_unlocked";
 
