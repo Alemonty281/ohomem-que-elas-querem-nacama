@@ -157,6 +157,7 @@ function SectionHeading({ eyebrow, title, copy }: { eyebrow?: string; title: str
 }
 
 function LandingPage() {
+  const { unlocked, videoRef, handlePlay } = useVslUnlock();
   return (
     <main className="min-h-screen bg-background text-foreground">
       <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:pt-10">
