@@ -9,6 +9,7 @@ import {
   Play,
   ShieldCheck,
   Smartphone,
+  TriangleAlert,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
