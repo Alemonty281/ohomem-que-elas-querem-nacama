@@ -291,6 +291,8 @@ function LandingPage() {
         <p>Material educativo. Não substitui avaliação, diagnóstico ou tratamento profissional.</p>
         <p className="mt-1">© 2026 O Homem Que Elas Querem na Cama</p>
       </footer>
+        </>
+      )}
     </main>
   );
 }
