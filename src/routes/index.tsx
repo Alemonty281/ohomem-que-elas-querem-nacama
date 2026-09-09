@@ -127,7 +127,11 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "icon", href: "/favicon.ico" },
+      { rel: "shortcut icon", href: "/favicon.ico" },
+      { rel: "canonical", href: "/" },
+    ],
   }),
   component: LandingPage,
 });
