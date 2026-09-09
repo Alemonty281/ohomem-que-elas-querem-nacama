@@ -9,6 +9,7 @@ import {
   Play,
   ShieldCheck,
   Smartphone,
+  TriangleAlert,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -165,8 +166,9 @@ function LandingPage() {
     <main className="min-h-screen bg-background text-foreground">
       <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:pt-10">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--wine)_65%,transparent),transparent_68%)]" />
-        <div className="-mx-4 -mt-7 flex items-center justify-center bg-primary px-4 py-2.5 sm:-mt-10">
-          <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary-foreground">🚨 ALERTA: ASSISTA AGORA ENQUANTO O CONTEÚDO ESTÁ DISPONÍVEL</span>
+        <div className="-mx-4 -mt-7 flex items-center justify-center gap-1.5 bg-primary px-4 py-2.5 sm:-mt-10">
+          <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0 text-primary-foreground" />
+          <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary-foreground">ALERTA: ASSISTA AGORA ENQUANTO O CONTEÚDO ESTÁ DISPONÍVEL</span>
         </div>
         <div className="relative mx-auto max-w-5xl text-center reveal">
           <h1 className="mx-auto mt-5 max-w-4xl font-display text-[2.55rem] font-bold uppercase leading-[1.03] tracking-normal text-foreground sm:text-6xl lg:text-7xl">
