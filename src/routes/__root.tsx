@@ -99,9 +99,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico?v=2" },
-      { rel: "shortcut icon", href: "/favicon.ico?v=2" },
-      { rel: "apple-touch-icon", href: "/favicon.ico?v=2" },
+      /* Configuração do Favicon */
+      { rel: "icon", type: "image/png", href: "/favicon.png?v=3" },
+      { rel: "shortcut icon", type: "image/png", href: "/favicon.png?v=3" },
+      { rel: "apple-touch-icon", href: "/favicon.png?v=3" },
     ],
   }),
   shellComponent: RootShell,
