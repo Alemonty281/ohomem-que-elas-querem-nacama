@@ -1,4 +1,4 @@
-  import { createFileRoute } from "@tanstack/react-router";
+ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -26,10 +26,12 @@ import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 // Novo Link do Checkout da Kursinha
 const CHECKOUT_URL = "https://pay.kursinha.com/c/6aa276c2008cf4e644665411";
 
-// Caminho do vídeo na pasta public
+// Caminho do vídeo
 const VSL_VIDEO_URL = "https://github.com/Alemonty281/ohomem-que-elas-querem-nacama/releases/download/v1.0.0/vsl.mp4.mp4";
-const UNLOCK_AFTER_SECONDS = 300;
-const UNLOCK_STORAGE_KEY = "vsl_unlocked";
+
+// TEMPO DE DESBLOQUEIO: 3 MINUTOS (180 SEGUNDOS)
+const UNLOCK_AFTER_SECONDS = 180; 
+const UNLOCK_STORAGE_KEY = "vsl_unlocked_v2";
 
 function useVslUnlock() {
   const [unlocked, setUnlocked] = useState(() => {
@@ -42,20 +44,14 @@ function useVslUnlock() {
   useEffect(() => {
     if (unlocked) return;
 
-    if (vslStarted) {
-      const startTime = Date.now();
-      const interval = setInterval(() => {
-        const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
-        if (elapsedSeconds >= UNLOCK_AFTER_SECONDS) {
-          window.localStorage.setItem(UNLOCK_STORAGE_KEY, "1");
-          setUnlocked(true);
-          clearInterval(interval);
-        }
-      }, 1000);
+    // Timer de 3 minutos ativado automaticamente ao carregar a página
+    const timer = setTimeout(() => {
+      window.localStorage.setItem(UNLOCK_STORAGE_KEY, "1");
+      setUnlocked(true);
+    }, UNLOCK_AFTER_SECONDS * 1000);
 
-      return () => clearInterval(interval);
-    }
-  }, [vslStarted, unlocked]);
+    return () => clearTimeout(timer);
+  }, [unlocked]);
 
   const handlePlay = useCallback(() => {
     setVslStarted(true);
@@ -178,6 +174,32 @@ function SectionHeading({ eyebrow, title, copy }: { eyebrow?: string; title: str
 
 function LandingPage() {
   const { unlocked, vslStarted, videoRef, handlePlay } = useVslUnlock();
+
+  // Injeção de fallback do Pixel via useEffect
+  useEffect(() => {
+    if (typeof window !== "undefined" && !(window as any).fbq) {
+      !(function (f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+
+      (window as any).fbq("init", "1831807974496568");
+      (window as any).fbq("track", "PageView");
+    }
+  }, []);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Noscript do Meta Pixel */}
@@ -193,10 +215,15 @@ function LandingPage() {
 
       <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:pt-10">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--wine)_65%,transparent),transparent_68%)]" />
-        <div className="-mx-4 -mt-7 flex items-center justify-center gap-1.5 bg-primary px-4 py-2.5 sm:-mt-10">
+        
+        {/* BANNER CENTRALIZADO DE ALERTA NO topo */}
+        <div className="-mx-4 -mt-7 flex items-center justify-center gap-1.5 bg-primary px-4 py-2.5 text-center sm:-mt-10">
           <TriangleAlert aria-hidden="true" className="size-3.5 shrink-0 text-primary-foreground" />
-          <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary-foreground">ALERTA: ASSISTA AGORA ENQUANTO O CONTEÚDO ESTÁ DISPONÍVEL</span>
+          <span className="text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary-foreground">
+            ALERTA: ASSISTA AGORA ENQUANTO O CONTEÚDO ESTÁ DISPONÍVEL
+          </span>
         </div>
+
         <div className="relative mx-auto max-w-5xl text-center reveal">
           <h1 className="mx-auto mt-5 max-w-4xl font-display text-[2.55rem] font-bold uppercase leading-[1.03] tracking-normal text-foreground sm:text-6xl lg:text-7xl">
             O Homem Que Elas<br className="hidden sm:block" /> <span className="text-primary">Querem na Cama</span>
@@ -279,7 +306,7 @@ function LandingPage() {
             </div>
           </section>
 
-          {/* SECÇÃO DA OFERTA ESPECIAL - COM CHECKOUT DA KURSINHA */}
+          {/* SECÇÃO DA OFERTA ESPECIAL - LINK DA KURSINHA */}
           <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
             <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
               <div className="text-center">
