@@ -34,7 +34,6 @@ const UNLOCK_STORAGE_KEY = "vsl_unlocked";
 function useVslUnlock() {
   const [unlocked, setUnlocked] = useState(() => {
     if (typeof window === "undefined") return false;
-    // Utiliza localStorage para persistir o desbloqueio entre sessões e recarregamentos
     return window.localStorage.getItem(UNLOCK_STORAGE_KEY) === "1";
   });
   const [vslStarted, setVslStarted] = useState(false);
@@ -43,7 +42,6 @@ function useVslUnlock() {
   useEffect(() => {
     if (unlocked) return;
 
-    // Temporizador infalível em tempo real acionado ao dar play no vídeo
     if (vslStarted) {
       const startTime = Date.now();
       const interval = setInterval(() => {
@@ -125,7 +123,19 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
+// Botão padrão que rola até a secção da oferta na mesma página
 function Cta({ children = "QUERO ACESSAR O GUIA AGORA" }: { children?: string }) {
+  return (
+    <Button variant="conversion" size="conversion" asChild>
+      <a href="#oferta">
+        {children}<ChevronRight aria-hidden="true" />
+      </a>
+    </Button>
+  );
+}
+
+// Botão exclusivo para a Oferta Especial que abre o Checkout da Standerpay
+function CheckoutCta({ children = "QUERO ACESSAR O GUIA AGORA" }: { children?: string }) {
   return (
     <Button variant="conversion" size="conversion" asChild>
       <a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer">
@@ -247,6 +257,7 @@ function LandingPage() {
             </div>
           </section>
 
+          {/* SECÇÃO DA OFERTA ESPECIAL */}
           <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
             <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
               <div className="text-center">
@@ -262,7 +273,8 @@ function LandingPage() {
                 <p className="font-display text-6xl font-bold tracking-normal text-foreground">4 900,00 <span className="text-2xl text-gold">Kz</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">Acesso digital</p>
               </div>
-              <div className="text-center"><Cta /><TrustLine /></div>
+              {/* APENAS ESTE BOTÃO VAI PARA O CHECKOUT STANDERPAY */}
+              <div className="text-center"><CheckoutCta /><TrustLine /></div>
             </div>
           </section>
 
