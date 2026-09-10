@@ -23,7 +23,8 @@ import depoimentoLuanda from "@/assets/depoimentos/dep1.jpg";
 import depoimentoVinicius from "@/assets/depoimentos/dep2.jpg";
 import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
-const CHECKOUT_URL = "#oferta";
+// Link do Checkout da Standerpay
+const CHECKOUT_URL = "https://www.standerpay.com/checkout/18292121-782f-4862-97b1-a0456bdd39ec";
 
 // Caminho do vídeo na pasta public
 const VSL_VIDEO_URL = "https://github.com/Alemonty281/ohomem-que-elas-querem-nacama/releases/download/v1.0.0/vsl.mp4.mp4";
@@ -127,7 +128,7 @@ export const Route = createFileRoute("/")({
 function Cta({ children = "QUERO ACESSAR O GUIA AGORA" }: { children?: string }) {
   return (
     <Button variant="conversion" size="conversion" asChild>
-      <a href={CHECKOUT_URL}>
+      <a href={CHECKOUT_URL} target="_blank" rel="noopener noreferrer">
         {children}<ChevronRight aria-hidden="true" />
       </a>
     </Button>
