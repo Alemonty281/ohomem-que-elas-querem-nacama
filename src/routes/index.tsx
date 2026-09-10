@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+  import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -23,8 +23,8 @@ import depoimentoLuanda from "@/assets/depoimentos/dep1.jpg";
 import depoimentoVinicius from "@/assets/depoimentos/dep2.jpg";
 import depoimentoGabriel from "@/assets/depoimentos/dep3.jpg";
 
-// Link do Checkout da Standerpay
-const CHECKOUT_URL = "https://www.standerpay.com/checkout/18292121-782f-4862-97b1-a0456bdd39ec";
+// Novo Link do Checkout da Kursinha
+const CHECKOUT_URL = "https://pay.kursinha.com/c/6aa276c2008cf4e644665411";
 
 // Caminho do vídeo na pasta public
 const VSL_VIDEO_URL = "https://github.com/Alemonty281/ohomem-que-elas-querem-nacama/releases/download/v1.0.0/vsl.mp4.mp4";
@@ -114,6 +114,22 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        children: `
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '1831807974496568');
+          fbq('track', 'PageView');
+        `,
+      },
+    ],
   }),
   component: LandingPage,
 });
@@ -129,7 +145,7 @@ function Cta({ children = "QUERO ACESSAR O GUIA AGORA" }: { children?: string })
   );
 }
 
-// Botão exclusivo para a Oferta Especial que abre o Checkout da Standerpay
+// Botão exclusivo da Oferta Especial que abre o Checkout da Kursinha
 function CheckoutCta({ children = "QUERO ACESSAR O GUIA AGORA" }: { children?: string }) {
   return (
     <Button variant="conversion" size="conversion" asChild>
@@ -164,6 +180,17 @@ function LandingPage() {
   const { unlocked, vslStarted, videoRef, handlePlay } = useVslUnlock();
   return (
     <main className="min-h-screen bg-background text-foreground">
+      {/* Noscript do Meta Pixel */}
+      <noscript>
+        <img
+          height="1"
+          width="1"
+          style={{ display: "none" }}
+          src="https://www.facebook.com/tr?id=1831807974496568&ev=PageView&noscript=1"
+          alt=""
+        />
+      </noscript>
+
       <section className="relative overflow-hidden px-4 pb-14 pt-7 sm:pt-10">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--wine)_65%,transparent),transparent_68%)]" />
         <div className="-mx-4 -mt-7 flex items-center justify-center gap-1.5 bg-primary px-4 py-2.5 sm:-mt-10">
@@ -252,6 +279,7 @@ function LandingPage() {
             </div>
           </section>
 
+          {/* SECÇÃO DA OFERTA ESPECIAL - COM CHECKOUT DA KURSINHA */}
           <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
             <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
               <div className="text-center">
