@@ -114,11 +114,6 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [
-      { rel: "icon", href: "/favicon.ico" },
-      { rel: "shortcut icon", href: "/favicon.ico" },
-      { rel: "canonical", href: "/" },
-    ],
   }),
   component: LandingPage,
 });
@@ -257,7 +252,6 @@ function LandingPage() {
             </div>
           </section>
 
-          {/* SECÇÃO DA OFERTA ESPECIAL */}
           <section id="oferta" className="section-rule bg-surface px-4 py-14 sm:py-20">
             <div className="mx-auto max-w-xl rounded-lg border border-gold/35 bg-card p-5 shadow-2xl shadow-primary/10 sm:p-9">
               <div className="text-center">
@@ -273,7 +267,6 @@ function LandingPage() {
                 <p className="font-display text-6xl font-bold tracking-normal text-foreground">4 900,00 <span className="text-2xl text-gold">Kz</span></p>
                 <p className="mt-1 text-xs text-muted-foreground">Acesso digital</p>
               </div>
-              {/* APENAS ESTE BOTÃO VAI PARA O CHECKOUT STANDERPAY */}
               <div className="text-center"><CheckoutCta /><TrustLine /></div>
             </div>
           </section>
